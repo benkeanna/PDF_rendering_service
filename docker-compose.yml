@@ -11,6 +11,7 @@ services:
       - db
     volumes:
       - ./data:/data
+      - ./app:/app
     restart: on-failure
 
   rabbitmq:
@@ -21,10 +22,11 @@ services:
 
   workers:
     image: pdfservice
-    entrypoint: sleep 10000
+    entrypoint: dramatiq worker --watch .
     restart: on-failure
     volumes:
       - ./data:/data
+      - ./app:/app
     depends_on:
       - api
       - rabbitmq
