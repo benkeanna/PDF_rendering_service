@@ -1,15 +1,33 @@
 version: '3.7'
 
 services:
-  app:
-    build: .
-    command: python app.py
-    volumes:
-      - .:/app
+  api:
+    build:
+      context: ./
+    image: pdfservice
     ports:
-      - 5000:5000
+      - 8000:8000
     depends_on:
       - db
+    volumes:
+      - ./data:/data
+    restart: on-failure
+
+  rabbitmq:
+    image: rabbitmq:latest
+    expose:
+      - 5672
+    restart: on-failure
+
+  workers:
+    image: pdfservice
+    entrypoint: sleep 10000
+    restart: on-failure
+    volumes:
+      - ./data:/data
+    depends_on:
+      - api
+      - rabbitmq
 
   db:
     image: postgres:12.0-alpine
