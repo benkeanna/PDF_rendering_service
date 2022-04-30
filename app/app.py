@@ -1,8 +1,13 @@
-from flask import Flask, request, abort, jsonify
+from flask import request, jsonify, abort, Flask
+from flask_sqlalchemy import SQLAlchemy
 
 from worker import parse_pdf
 
 app = Flask(__name__)
+# Config would be handled separately and credentials not saved in repo.
+# I would let SRE or Infra team handle this securely.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@db:5432/pdf'
+db = SQLAlchemy(app)
 
 
 @app.route('/')
