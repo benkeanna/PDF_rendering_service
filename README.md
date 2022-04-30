@@ -13,3 +13,8 @@ Run `docker-compose up` to run all containers.
 ### Migrate it
 
 Run `docker-compose exec api python migrate.py`
+
+
+## Upload file
+
+Run `curl -F file=@filename.pdf -X POST http://127.0.0.1:8000/documents/`

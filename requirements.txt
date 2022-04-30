@@ -4,3 +4,4 @@ dramatiq~=1.13.0
 dramatiq[rabbitmq, watch]
 SQLAlchemy~=1.4.36
 psycopg2-binary
+Werkzeug~=2.1.1

@@ -1,12 +1,14 @@
+import os
+
 from flask import request, jsonify, abort, Flask
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
 
+from config import allowed_file
 from worker import parse_pdf
 
 app = Flask(__name__)
-# Config would be handled separately and credentials not saved in repo.
-# I would let SRE or Infra team handle this securely.
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@db:5432/pdf'
+app.config.from_object('config.Config')
 db = SQLAlchemy(app)
 
 
@@ -15,14 +17,24 @@ def hello_world():
     return 'Hello World!'
 
 
-@app.route('/documents/', methods=['GET'])  # TODO POST
+@app.route('/documents/', methods=['GET', 'POST'])  # TODO POST
 def create_document():
     """uploads a file
         returns JSON { “id”: “<DOCUMENT_ID>? }"""
 
-    if request.method == 'GET':
-        return jsonify(parse_pdf.send()), 200
-
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            return "no file", 400
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            return "no file name", 400
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return "ok", 200
     else:
         abort(405)
 
