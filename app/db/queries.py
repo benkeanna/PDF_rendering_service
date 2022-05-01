@@ -40,4 +40,6 @@ def update_document(document_id, num_of_pages):
 
 
 def read_pages(document_id):
-    pass
+    with Session.begin() as session:
+        pages = session.query(Page).filter_by(document_id=document_id).first()
+        return pages.as_dict

@@ -1,7 +1,7 @@
-from flask import request, abort, jsonify
+from flask import request, abort, jsonify, send_file
 
 from app import app
-from db.queries import read_document
+from db.queries import read_document, read_pages
 from service.upload_document import upload_document
 from service.utils import is_allowed_document
 
@@ -44,7 +44,8 @@ def get_document(document_id):
 def get_document_pages(document_id):
     """return rendered image png"""
     if request.method == 'GET':
-        return document_id, 200
+        pages = read_pages(document_id)
+        return send_file(pages['filepath'], mimetype='image/png')
 
     else:
         abort(405)
