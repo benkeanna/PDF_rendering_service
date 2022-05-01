@@ -1,5 +1,4 @@
 data/*
-!data/.gitkeep
 .idea/
 .DS_Store
 app/**/__pycache__/
