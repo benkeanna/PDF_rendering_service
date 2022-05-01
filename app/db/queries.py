@@ -13,6 +13,8 @@ Session = sessionmaker(engine)
 def read_document(document_id):
     with Session.begin() as session:
         document = session.query(Document).filter_by(id=str(document_id)).first()
+        if not document:
+            return None
         return document.as_dict
 
 
@@ -39,7 +41,9 @@ def update_document(document_id, num_of_pages):
         session.commit()
 
 
-def read_pages(document_id):
+def read_page(document_id, page_number):
     with Session.begin() as session:
-        pages = session.query(Page).filter_by(document_id=document_id).first()
+        pages = session.query(Page).filter_by(document_id=document_id, page_number=page_number).first()
+        if not pages:
+            return None
         return pages.as_dict
