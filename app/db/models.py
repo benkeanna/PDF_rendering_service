@@ -14,14 +14,18 @@ class Document(db.Model):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     modified_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, document_id=None, status=None, filepath=None, num_of_pages=None):
-        self.id = document_id
+    def __init__(self, id=None, status=None, filepath=None, num_of_pages=None):
+        self.id = id
         self.status = status
         self.filepath = filepath
         self.num_of_pages = num_of_pages
 
     def __repr__(self):
         return f'<Document {self.id!r}>'
+
+    @property
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class Page(db.Model):
@@ -40,3 +44,7 @@ class Page(db.Model):
 
     def __repr__(self):
         return f'<Page {self.id!r}>'
+
+    @property
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

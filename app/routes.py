@@ -1,25 +1,26 @@
 from flask import request, abort, jsonify
 
 from app import app
+from db.queries import read_document
 from service.upload_document import upload_document
-from service.utils import allowed_document
+from service.utils import is_allowed_document
 
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    """Dummy endpoint to check that the app is working."""
+    return 'Welcome in PDF Rendering Service!'
 
 
 @app.route('/documents/', methods=['POST'])
 def create_document():
-    """uploads a file
-        returns JSON { “id”: “<DOCUMENT_ID>? }"""
+    """Returns document_id and initiates document upload."""
     if request.method == 'POST':
         if 'file' not in request.files:
             abort(400, 'File not found.')
 
         file = request.files['file']
-        if file and allowed_document(file.filename):
+        if file and is_allowed_document(file.filename):
             document_id = upload_document(file)
             response = {'id': document_id}
             return jsonify(response), 200
@@ -29,9 +30,10 @@ def create_document():
 
 @app.route('/documents/<document_id>/', methods=['GET'])
 def get_document(document_id):
-    """returns JSON """
+    """Returns document info."""
     if request.method == 'GET':
-        response = {'status': 'processing|done', 'n_pages': 1}
+        document = read_document(document_id)
+        response = {'status': document['status'], 'n_pages': document['num_of_pages']}
         return jsonify(response), 200
 
     else:
