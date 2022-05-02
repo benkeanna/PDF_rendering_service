@@ -1,8 +1,9 @@
-import datetime
+from datetime import datetime
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from utils.document import STATUS_PROCESSING, STATUS_DONE
 from config import Config
 from db.models import Document, Page
 
@@ -19,7 +20,7 @@ def read_document(document_id):
 
 
 def create_document(document_id, filepath):
-    document = Document(id=document_id, status='processing', filepath=filepath)
+    document = Document(id=document_id, status=STATUS_PROCESSING, filepath=filepath)
     with Session.begin() as session:
         session.add(document)
         session.commit()
@@ -28,9 +29,9 @@ def create_document(document_id, filepath):
 def update_document(document_id, num_of_pages):
     with Session.begin() as session:
         document = session.query(Document).filter_by(id=str(document_id)).first()
-        document.status = 'done'
+        document.status = STATUS_DONE
         document.num_of_pages = num_of_pages
-        document.modified_at = datetime.datetime.utcnow()
+        document.modified_at = datetime.utcnow()
         session.commit()
 
 

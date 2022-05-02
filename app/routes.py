@@ -2,7 +2,7 @@ from flask import request, abort, jsonify, send_file
 
 from app import app
 from worker import upload_document
-from processing.utils import is_allowed_document
+from utils.document import is_allowed_document
 from db.queries import read_document, read_page
 
 
@@ -14,7 +14,7 @@ def hello_world():
 
 @app.route('/documents/', methods=['POST'])
 def create_document():
-    """Returns document_id and initiates document processing."""
+    """Returns document_id and initiates document utils."""
     if request.method == 'POST':
         if 'file' not in request.files:
             abort(400, description='No file posted.')

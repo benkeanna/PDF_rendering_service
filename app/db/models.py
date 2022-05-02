@@ -3,12 +3,13 @@ import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum, DateTime
 
 from app import db
+from utils.document import STATUS_PROCESSING, STATUS_DONE
 
 
 class Document(db.Model):
     __tablename__ = 'document'
     id = Column(String(50), primary_key=True)
-    status = Column(Enum('processing', 'done', name='status_enum'), nullable=False)
+    status = Column(Enum(STATUS_PROCESSING, STATUS_DONE, name='status_enum'), nullable=False)
     filepath = Column(String(255), unique=True, nullable=False)
     num_of_pages = Column(Integer)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)

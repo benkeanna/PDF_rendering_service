@@ -6,8 +6,9 @@ from pdf2image import convert_from_path
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 
 from db import queries
-from processing.process_page import get_page_path, resize_page_if_needed
-from processing.process_document import get_document_path
+from config import Config
+from utils.document import get_document_path
+from utils.page import get_page_path, resize_page_if_needed
 
 rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
 dramatiq.set_broker(rabbitmq_broker)
@@ -22,7 +23,7 @@ def upload_document(file):
     # Create DB entry.
     queries.create_document(document_id=document_id, filepath=filepath)
 
-    # Queue document processing.
+    # Queue document utils.
     upload_pages.send(document_id)
 
     return document_id
@@ -48,7 +49,7 @@ def process_image(document_id, page_number):
     document_path = get_document_path(document_id)
     image = convert_from_path(document_path, first_page=page_number, last_page=page_number + 1)
     filepath = get_page_path(document_id, page_number)
-    image[0].save(filepath, 'PNG')
+    image[0].save(filepath, Config.PAGE_EXTENSION.upper())
 
     # Make image fit into given pixels rectangle.
     resize_page_if_needed(filepath)
