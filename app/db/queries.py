@@ -25,13 +25,6 @@ def create_document(document_id, filepath):
         session.commit()
 
 
-def create_page(document_id, filepath, page_number):
-    page = Page(document_id=document_id, filepath=filepath, page_number=page_number)
-    with Session.begin() as session:
-        session.add(page)
-        session.commit()
-
-
 def update_document(document_id, num_of_pages):
     with Session.begin() as session:
         document = session.query(Document).filter_by(id=str(document_id)).first()
@@ -41,9 +34,16 @@ def update_document(document_id, num_of_pages):
         session.commit()
 
 
+def create_page(document_id, filepath, page_number):
+    page = Page(document_id=document_id, filepath=filepath, page_number=page_number)
+    with Session.begin() as session:
+        session.add(page)
+        session.commit()
+
+
 def read_page(document_id, page_number):
     with Session.begin() as session:
-        pages = session.query(Page).filter_by(document_id=document_id, page_number=page_number).first()
-        if not pages:
+        page = session.query(Page).filter_by(document_id=document_id, page_number=page_number).first()
+        if not page:
             return None
-        return pages.as_dict
+        return page.as_dict

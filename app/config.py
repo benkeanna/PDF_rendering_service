@@ -15,3 +15,6 @@ class Config:
     # Let it be specific extension for now. Could be list of extensions in the future.
     DOCUMENT_EXTENSION = 'pdf'
     PAGE_EXTENSION = 'png'
+
+    MAX_PAGE_WIDTH = 1200
+    MAX_PAGE_HEIGHT = 1600

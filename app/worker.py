@@ -6,6 +6,7 @@ from PIL import Image
 from pdf2image import convert_from_path
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 
+from config import Config
 from db import queries
 from service.upload_page import get_page_path
 from service.upload_document import get_document_path
@@ -38,11 +39,15 @@ def upload_pages(document_id):
     for page_number in range(len(images)):
         filepath = get_page_path(document_id, page_number)
         images[page_number].save(filepath, 'PNG')
-        im = Image.open(filepath)
-        image = ImageOps.contain(im, (1200, 1600))
-        image.save(filepath)
+        resize_if_needed(filepath)
 
         queries.create_page(document_id, filepath, page_number)
 
     # Update document status and number of pages.
     queries.update_document(document_id=document_id, num_of_pages=len(images))
+
+
+def resize_if_needed(filepath):
+    image = Image.open(filepath)
+    resized_image = ImageOps.contain(image, (Config.MAX_PAGE_WIDTH, Config.MAX_PAGE_HEIGHT))
+    resized_image.save(filepath)
