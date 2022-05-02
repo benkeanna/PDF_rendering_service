@@ -23,7 +23,7 @@ def upload_document(file):
     # Create DB entry.
     queries.create_document(document_id=document_id, filepath=filepath)
 
-    # Queue document utils.
+    # Process document pages.
     upload_pages.send(document_id)
 
     return document_id
@@ -48,16 +48,16 @@ def upload_pages(document_id):
 def process_image(document_id, page_number):
     document_path = get_document_path(document_id)
     image = convert_from_path(document_path, first_page=page_number, last_page=page_number + 1)
-    filepath = get_page_path(document_id, page_number)
-    image[0].save(filepath, Config.PAGE_EXTENSION.upper())
+    page_path = get_page_path(document_id, page_number)
+    image[0].save(page_path, Config.PAGE_EXTENSION.upper())
 
     # Make image fit into given pixels rectangle.
-    resize_page_if_needed(filepath)
+    resize_page_if_needed(page_path)
 
     # Create DB entry.
-    queries.create_page(document_id, filepath, page_number)
+    queries.create_page(document_id, page_path, page_number)
 
 
 @dramatiq.actor
 def update_document_info(document_id, pages_count):
-    queries.update_document(document_id=document_id, num_of_pages=pages_count)
+    queries.finalize_document(document_id=document_id, num_of_pages=pages_count)

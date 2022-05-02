@@ -26,7 +26,7 @@ def create_document(document_id, filepath):
         session.commit()
 
 
-def update_document(document_id, num_of_pages):
+def finalize_document(document_id, num_of_pages):
     with Session.begin() as session:
         document = session.query(Document).filter_by(id=str(document_id)).first()
         document.status = STATUS_DONE
