@@ -2,7 +2,7 @@ from flask import request, abort, jsonify, send_file
 
 from app import app
 from worker import upload_document
-from service.utils import is_allowed_document
+from processing.utils import is_allowed_document
 from db.queries import read_document, read_page
 
 
