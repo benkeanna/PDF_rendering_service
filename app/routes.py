@@ -17,13 +17,15 @@ def create_document():
     """Returns document_id and initiates document processing."""
     if request.method == 'POST':
         if 'file' not in request.files:
-            abort(400, 'No file posted.')
+            abort(400, description='No file posted.')
 
         file = request.files['file']
         if file and is_allowed_document(file.filename):
             document_id = upload_document(file)
             response = {'id': document_id}
             return response, 200
+        else:
+            abort(400, description='File with this extension not allowed.')
     else:
         abort(405)
 
@@ -48,7 +50,7 @@ def get_document_pages(document_id, page_number):
     if request.method == 'GET':
         pages = read_page(document_id, page_number)
         if not pages:
-            abort(404, 'Page not found.')
+            abort(404, description='Page not found.')
         return send_file(pages['filepath'], mimetype='image/png')
 
     else:
