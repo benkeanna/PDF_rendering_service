@@ -1,7 +1,7 @@
 Flask~=2.1.1
 Flask-SQLAlchemy
 dramatiq~=1.13.0
-dramatiq[rabbitmq, watch]
+dramatiq[rabbitmq, watch, redis]
 SQLAlchemy~=1.4.36
 psycopg2-binary
 pdf2image~=1.16.0

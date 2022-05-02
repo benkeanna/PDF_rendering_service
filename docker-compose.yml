@@ -12,18 +12,18 @@ services:
     volumes:
       - ./data:/data
       - ./app:/app
-    restart: on-failure
 
   rabbitmq:
     image: rabbitmq:latest
     expose:
       - 5672
-    restart: on-failure
+    ports:
+      - 5672:5672
 
   workers:
     image: pdfservice
-    entrypoint: dramatiq worker --watch .
-    restart: on-failure
+    # Limit processes and thread for local o handle it. Should be tweaked for production or added more workers.
+    entrypoint: dramatiq worker --processes 1 --threads 4
     volumes:
       - ./data:/data
       - ./app:/app
@@ -43,6 +43,10 @@ services:
       - 5432
     ports:
       - "54320:5432"
+
+  redis:
+    image: redis:7.0.0-alpine3.15
+    command: redis-server --save "" --appendonly no
 
 volumes:
   postgres_data:
