@@ -1,6 +1,8 @@
 from uuid import uuid4
 
 import dramatiq
+from PIL import ImageOps
+from PIL import Image
 from pdf2image import convert_from_path
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 
@@ -36,10 +38,11 @@ def upload_pages(document_id):
     for page_number in range(len(images)):
         filepath = get_page_path(document_id, page_number)
         images[page_number].save(filepath, 'PNG')
+        im = Image.open(filepath)
+        image = ImageOps.contain(im, (1200, 1600))
+        image.save(filepath)
 
         queries.create_page(document_id, filepath, page_number)
 
     # Update document status and number of pages.
     queries.update_document(document_id=document_id, num_of_pages=len(images))
-
-
