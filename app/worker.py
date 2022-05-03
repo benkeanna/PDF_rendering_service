@@ -14,8 +14,6 @@ from utils.document import get_document_path
 from utils.page import get_page_path, resize_page_if_needed
 
 rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
-dramatiq.set_broker(rabbitmq_broker)
-
 result_backend = RedisBackend(url='redis://redis')
 rabbitmq_broker.add_middleware(Results(backend=result_backend))
 dramatiq.set_broker(rabbitmq_broker)
@@ -55,7 +53,7 @@ def upload_pages(document_id):
     task_timeout_in_ms = 60 * 60 * 1000
     result.wait(timeout=task_timeout_in_ms)
 
-    # Some sophisticated logger should replace prints and there should be more logs in general.
+    # Logger should replace prints and there should be more logs in general.
     print('Done')
 
     # Update document status and number of pages.
