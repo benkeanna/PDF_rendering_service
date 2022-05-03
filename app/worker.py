@@ -13,8 +13,8 @@ from config import Config
 from utils.document import get_document_path
 from utils.page import get_page_path, resize_page_if_needed
 
-rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
-result_backend = RedisBackend(url='redis://redis')
+rabbitmq_broker = RabbitmqBroker(host=Config.RABBITMQ_BROKER_HOST)
+result_backend = RedisBackend(url=Config.DRAMATIQ_REDIS_HOST)
 rabbitmq_broker.add_middleware(Results(backend=result_backend))
 dramatiq.set_broker(rabbitmq_broker)
 

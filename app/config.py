@@ -11,6 +11,8 @@ class Config:
     UPLOAD_FOLDER = os.path.abspath('../data')
     UPLOADED_FILE_FOLDER_NAME = 'uploaded'
     PAGES_FOLDER_NAME = 'pages'
+    RABBITMQ_BROKER_HOST = 'rabbitmq'
+    DRAMATIQ_REDIS_HOST = 'redis://redis'
 
     # Let it be specific extension for now. Could be list of extensions in the future.
     DOCUMENT_EXTENSION = 'pdf'

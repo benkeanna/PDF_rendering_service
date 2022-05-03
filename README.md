@@ -16,6 +16,6 @@ Run `curl -F file=@filename.pdf -X POST http://127.0.0.1:8000/documents/`
 Run ` curl http://127.0.0.1:8000/documents/<document_id>/`
 
 ### Get document page
-Run ` curl http://127.0.0.1:8000/documents/<document_id>/pages/<page_number> -vvv`
+Run ` curl http://127.0.0.1:8000/documents/<document_id>/pages/<page_number>/ -vvv`
 
-Or even better, open `http://127.0.0.1:8000/documents/<document_id>/pages/<page_number>` in browser.
+Or even better, open `http://127.0.0.1:8000/documents/<document_id>/pages/<page_number>/` in browser.

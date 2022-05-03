@@ -32,7 +32,7 @@ def get_document(document_id):
         if not document:
             abort(make_response(jsonify(message='Document not found.'), 404))
         # Keeping the 'n_pages' because some service in the real world can already count on it,
-        # but I would rename it if I knew I can.
+        # but I would rename it if I knew I could.
         response = {'status': document['status'], 'n_pages': document['num_of_pages']}
         return response, 200
 
@@ -42,7 +42,8 @@ def get_document(document_id):
 
 @app.route('/documents/<document_id>/pages/<page_number>', methods=['GET'])
 def get_document_pages(document_id, page_number):
-    """Returns rendered document pages in PNG format."""
+    """Returns rendered document page in PNG format."""
+    # Cache for the pages could be good.
     if request.method == 'GET':
         pages = read_page(document_id, page_number)
         if not pages:

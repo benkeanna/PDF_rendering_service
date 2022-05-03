@@ -46,6 +46,7 @@ services:
 
   redis:
     image: redis:7.0.0-alpine3.15
+    # No persistence for local development. For production this should be treated as pet, not cattle.
     command: redis-server --save "" --appendonly no
 
 volumes:
